@@ -1,0 +1,66 @@
+### Default
+django
+sqlparse
+tzdata
+asgiref
+
+### image
+pillow
+
+### media clear after delete
+django-cleanup==6.0.0
+
+### bootstrap ui
+django-crispy-forms==1.14.0
+crispy-bootstrap4
+django-js-asset==2.0.0
+django-tempus-dominus
+
+### Mysql Server
+mysqlclient
+# mysql-server
+
+### PostgreSQL Server
+psycopg2
+# pytz
+
+### WEB3 Integration
+# web3
+
+### env file for secret key
+python-decouple
+
+# Admin Log
+django-admin-logs
+
+### Admin UI
+django-jazzmin
+
+### For SSL
+django-sslserver
+# py manage.py runsslserver
+
+### AUTO SESSION LOGOUT
+django-auto-logout
+pytz
+
+### Django Simple history in admin
+django-simple-history
+
+### Email instead of username as main user
+django-use-email-as-username
+
+### Lockdown application
+django-lockdown
+
+### Django admin chart for admin panel
+django-admin-charts
+
+### SEND MAIL POST
+django-post-office
+
+### API Tracking
+# drf-api-tracking
+
+###Django Defender
+django-defender

@@ -1,0 +1,22 @@
+{% extends 'layouts/base.html' %} 
+{% block span_block %} 
+{{user.username}}'s Profile 
+{% endblock span_block %} 
+{% block body_block %}
+
+<div class="row mg-b-20">
+  <div class="col-xl-6">
+    <div class="card pd-20 pd-sm-40">
+      <h2 class="card-body-title">My Profile</h2>
+      <p>Username: {{ user.username }}</p>
+      <p>Email: {{ user.email }}</p>
+      <p>First name: {{ user.first_name }}</p>
+      <p>Last name: {{ user.last_name }}</p>
+    </div>
+  </div>
+  <div class="col-xl-2">
+    <Button><a href="{% url 'App_AUTH:send_mail' %}">Send Mail</a></Button>
+  </div>
+</div>
+{% endblock body_block %}
+
