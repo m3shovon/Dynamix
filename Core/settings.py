@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'simple_history', 'lockdown', 'crispy_forms', 'crispy_bootstrap4',
     'defender',
-    'App_Auth', 'App_Chat', 'App_Mail', 'App_Resume'
+    'App_Auth', 'App_Chat', 'App_Mail', 'App_Resume', 'App_Converter'
 
 ]
 
@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'simple_history.middleware.HistoryRequestMiddleware',
     # 'lockdown.middleware.LockdownMiddleware', # Lockdown an entire site
     'django_auto_logout.middleware.auto_logout', # Session log out
-    'defender.middleware.FailedLoginMiddleware', # Failed login
+    # 'defender.middleware.FailedLoginMiddleware', # Failed login
 ]
 
 ROOT_URLCONF = 'Core.urls'

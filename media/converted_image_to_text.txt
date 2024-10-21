@@ -1,0 +1,66 @@
+CYBERSECURITY TOOLS BY CATEGORY
+Information Gathering:
+*map
+> Shodan
+>Maltego
+>TheHavester
+>Recon-NC,
+>Censys
+> OSINT Framework
+>Gobuster
+Wireless Hacking:
+>Aireraek-NG
+>Wifite
+>Kismet
+>TCPDump
+> Airsnort
+etstumbler
+> Reaver
+Software Engineering:
+>GoPhish
+> Hidden Eye
+>SocialFish
+>EvilURL
+> Evilginx
+Exploitation:
+>Burp Suite
+> Metasploit
+Framework
+>SQL Map
+>ZAP
+>ExploitDB
+>Core Impact
+>C0balt Strike
+HACK>
+Password Cracking:
+>John The Ripper
+>Hydra
+>Hashcat
+>OPHCrack
+>Medusa
+>TIIC-Hydra
+>Cain & Abel
+Vulnerability Scanning:
+> O penVAS
+>Nessus
+> A ppScan
+>LYNIS
+> Retina
+>Nexpose
+For ensics:
+>SluethKit
+> Autopsy
+> Volatility
+>Guymager
+>Foremost
+> Binwalk
+> Wireshark
+Web Application
+Assessment:
+>OWASP ZAP
+> Burp Suite
+>Nikto
+>ZAP
+>WPScan
+>Gobuster
+> App Spider

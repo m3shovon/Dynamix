@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Text</title>
+    <link rel="stylesheet" href="{% static 'assets/styles/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-5">Convert PDF to Text</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="pdf">Upload PDF:</label>
+                <input type="file" name="pdf" class="form-control-file" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Convert and Download</button>
+        </form>
+    </div>
+</body>
+</html>

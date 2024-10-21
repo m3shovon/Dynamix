@@ -64,3 +64,29 @@ django-post-office
 
 ###Django Defender
 django-defender
+
+# For image processing
+Pillow     
+
+ # For PDF to text           
+PyMuPDF     
+
+# For image to text (OCR)
+# X pytesseract X
+
+# For mp4 to mp3 conversion
+pydub    
+# For file type detection            
+python-magic       
+
+# For encryption and decryption
+cryptography  
+
+# For DOC to PDF conversion
+python-docx   
+
+# For DOC to PDF rendering
+weasyprint            
+
+# remove Background
+rembg

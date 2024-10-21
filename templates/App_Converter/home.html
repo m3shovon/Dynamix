@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Converter</title>
+    <link rel="stylesheet" href="{% static 'assets/styles/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-5">File Converter Utility</h1>
+        <div class="row">
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">PDF to Text</h5>
+                        <p class="card-text">Convert PDF files into plain text.</p>
+                        <a href="{% url 'App_Converter:pdf_to_text' %}" class="btn btn-primary">Convert PDF</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Image to Text</h5>
+                        <p class="card-text">Extract text from images using OCR.</p>
+                        <a href="{% url 'App_Converter:image_to_text' %}" class="btn btn-primary">Extract Text</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Remove Background</h5>
+                        <p class="card-text">Remove background from images and download them.</p>
+                        <a href="{% url 'App_Converter:upload_image' %}" class="btn btn-primary">Remove Background</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Convert Image Format</h5>
+                        <p class="card-text">Convert images to different formats (PNG, JPG, WebP).</p>
+                        <a href="{% url 'App_Converter:convert_image' %}" class="btn btn-primary">Convert Image</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
