@@ -90,3 +90,7 @@ weasyprint
 
 # remove Background
 rembg
+
+# Download from link(YT,Insta)
+yt-dlp
+

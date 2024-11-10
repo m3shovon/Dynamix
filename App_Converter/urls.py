@@ -16,4 +16,12 @@ urlpatterns = [
     # path('doc-to-pdf/', views.doc_to_pdf, name='doc_to_pdf'),
     path('mp4-to-mp3/', views.mp4_to_mp3, name='mp4_to_mp3'),
     # path('download/<str:filename>/', views.download_text, name='download_text'),
+    path('download-video', views.download_yt, name='download_media'),
 ]
+
+
+
+
+
+
+

@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remove Image Background</title>
     <link rel="stylesheet" href="{% static 'assets/styles/style.css' %}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container mb-4">
         <!-- Main Title -->
-        <h1 class="text-center mb-4">Remove Background from Image</h1>
+        <h1 class="app-title">Remove Background from Image</h1>
 
         <!-- Success Message and Processed Image Display -->
         {% if message %}
@@ -19,30 +19,32 @@
             {{ message }}
         </div>
 
-        <!-- Processed Image Section -->
-        <div class="d-flex justify-content-center">
-            <div class="card shadow-sm" style="width: 300px;">
-                <img src="{{ processed_image_url }}" class="card-img-top" alt="Processed Image">
-                <div class="card-body text-center">
-                    <a href="{{ processed_image_url }}" class="btn btn-success btn-sm" download>Download Processed Image</a>
+        <!-- Updated Processed Image Display Section -->
+        <div class="image-display-container">
+            <div class="image-card">
+                <img src="{{ processed_image_url }}" class="processed-image" alt="Processed Image">
+                <div class="image-card-footer">
+                    <a href="{{ processed_image_url }}" class="btn-download" download>Download Processed Image</a>
                 </div>
             </div>
         </div>
         {% endif %}
 
         <!-- Upload Form Section -->
-        <div class="card mt-5 shadow-sm p-4">
-            <h4 class="card-title text-center mb-4">Upload a New Image</h4>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="image">Choose Image:</label>
-                    <input type="file" name="image" class="form-control-file" required>
-                </div>
-                <div class="">
-                    <button type="submit" class="btn btn-primary">Remove Background</button>
-                </div>
-            </form>
+        <div class="container">
+            <!-- <h4 class="app-title">Upload a New Image</h4> -->
+            <div class="form-container">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="image" class="form-label">Choose Image:</label>
+                        <input type="file" name="image" class="form-control-file" required>
+                    </div>
+                    <div class="">
+                        <button type="submit" class="btn">Remove Background</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 

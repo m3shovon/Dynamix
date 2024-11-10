@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Convert Image Format</title>
     <link rel="stylesheet" href="{% static 'assets/styles/style.css' %}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -14,11 +14,11 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
-                <label for="image">Upload Image:</label>
+                <label for="image" class="form-label">Upload Image:</label>
                 <input type="file" name="image" class="form-control-file" required>
             </div>
             <div class="form-group">
-                <label for="format">Select Format:</label>
+                <label for="format" class="form-label">Select Format:</label>
                 <select name="format" class="form-control" required>
                     <option value="jpg">JPG</option>
                     <option value="png">PNG</option>

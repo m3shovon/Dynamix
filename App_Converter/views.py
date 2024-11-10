@@ -12,8 +12,8 @@ import io
 
 # Remove BG
 from django.shortcuts import render, redirect
-from .forms import ImageUploadForm
-from .models import ImageUpload
+from .forms import ImageUploadForm, DownloadForm
+from .models import ImageUpload, DownloadHistory
 from rembg import remove
 from PIL import Image
 from io import BytesIO
@@ -23,6 +23,7 @@ from cryptography.fernet import Fernet
 from docx import Document
 # from weasyprint import HTML
 from pydub import AudioSegment
+from yt_dlp import YoutubeDL
 
 
 
@@ -241,8 +242,33 @@ def mp4_to_mp3(request):
         return JsonResponse({'message': 'MP4 converted to MP3', 'file': output_filename})
     return render(request, 'App_Converter/mp4_to_mp3.html')
 
+# YT downlaoder
+def download_yt(request):
+    if request.method == "POST":
+        form = DownloadForm(request.POST)
+        if form.is_valid():
+            url = form.cleaned_data['url']
+            try:
+                ydl_opts = {
+                    'outtmpl': 'downloads/%(title)s.%(ext)s',
+                    'quiet': True,
+                }
+                with YoutubeDL(ydl_opts) as ydl:
+                    info = ydl.extract_info(url, download=True)
+                    file_path = ydl.prepare_filename(info)
 
+                # Return the file for download
+                with open(file_path, 'rb') as f:
+                    response = HttpResponse(f.read(), content_type="application/octet-stream")
+                    response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
+                    return response
+            except Exception as e:
+                return render(request, 'App_Converter/error.html', {'error': str(e)})
 
+    else:
+        form = DownloadForm()
+
+    return render(request, 'App_Converter/yt_downloader.html', {'form': form})
 
 
 

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Progress</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 80%;
+            background-color: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 20px;
+            width: 0%;
+            background-color: #4caf50;
+            text-align: center;
+            color: white;
+            border-radius: 10px;
+        }
+
+        #status {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Downloading...</h2>
+    <div class="progress-bar">
+        <div class="progress" id="progress-bar"></div>
+    </div>
+    <div id="status">Starting...</div>
+
+    <script>
+        const downloadId = "{{ download_id }}";
+        const progressBar = document.getElementById('progress-bar');
+        const statusText = document.getElementById('status');
+
+        function updateProgress() {
+            fetch(`/check-progress/${downloadId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const progress = data.progress;
+                    statusText.textContent = progress;
+
+                    if (progress.includes('%')) {
+                        const percent = parseFloat(progress.replace('%', ''));
+                        progressBar.style.width = percent + '%';
+                    }
+
+                    if (progress === 'Completed' || progress.startsWith('Error')) {
+                        clearInterval(progressInterval);
+                        statusText.textContent = progress;
+                        if (progress === 'Completed') {
+                            alert('Download completed successfully!');
+                            window.location.href = '/';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking progress:', error);
+                    clearInterval(progressInterval);
+                    statusText.textContent = 'Failed to check progress.';
+                });
+        }
+
+        const progressInterval = setInterval(updateProgress, 1000);
+    </script>
+</body>
+</html>
