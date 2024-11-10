@@ -110,6 +110,13 @@ def save_profile(sender, instance, **kwargs):
 
 
 
+# Hit Counter
+class HitCounter(models.Model):
+    count = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Hit Count: {self.count}"
+
 
 
 

@@ -59,6 +59,7 @@ MIDDLEWARE = [
     # 'lockdown.middleware.LockdownMiddleware', # Lockdown an entire site
     'django_auto_logout.middleware.auto_logout', # Session log out
     # 'defender.middleware.FailedLoginMiddleware', # Failed login
+    'App_Auth.middleware.HitCounterMiddleware', # hit Count
 ]
 
 ROOT_URLCONF = 'Core.urls'

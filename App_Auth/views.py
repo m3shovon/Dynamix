@@ -6,13 +6,17 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login,logout,authenticate
 # form and model
-from App_Auth.models import Profile
+from App_Auth.models import Profile, HitCounter
 from App_Auth.forms import ProfileForm, SignUpForm
 # Message
 from django.contrib import messages #error, success, info, warning
 from django.core.paginator import Paginator
 from App_Auth.utils import send_mail_to_client
 from lockdown.decorators import lockdown
+
+#  Hit Count MiddlewareMixin
+from django.utils.deprecation import MiddlewareMixin
+from django.http import JsonResponse
 
 # @lockdown()
 @login_required
@@ -75,3 +79,14 @@ def send_mail(request):
 # 404 Error
 def handle_not_found(request,exception):
 	return render(request, "App_Auth/404.html")
+
+#  Hit Count
+# def increment_hit_count():
+#     counter, created = HitCounter.objects.get_or_create(id=1)
+#     counter.count += 1
+#     counter.save()
+
+def get_hit_count(request):
+    counter = HitCounter.objects.first()
+    hit_count = counter.count if counter else 0
+    return JsonResponse({'hit_count': hit_count})
