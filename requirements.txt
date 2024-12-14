@@ -94,3 +94,9 @@ rembg
 # Download from link(YT,Insta)
 yt-dlp
 
+
+
+cryptography 
+python-docx 
+weasyprint 
+pydub

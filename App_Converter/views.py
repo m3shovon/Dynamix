@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+# from weasyprint import HTML
+
 # import json
 import requests
 
@@ -9,6 +11,9 @@ import os
 
 from PIL import Image
 import io
+
+from django.contrib.auth.hashers import make_password, check_password
+
 
 # Remove BG
 from django.shortcuts import render, redirect
@@ -188,11 +193,11 @@ def convert_image(request):
         return response
 
     return render(request, 'App_Converter/convert_image.html')
-
-# Password Saver
+# Generate a key and initialize Fernet cipher
 key = Fernet.generate_key()
 cipher = Fernet(key)
 
+# Password Saver
 def save_password(request):
     if request.method == 'POST':
         password = request.POST['password']
@@ -201,7 +206,7 @@ def save_password(request):
         return JsonResponse({'encrypted_password': encrypted_password.decode()})
     return render(request, 'App_Converter/save_password.html')
 
-# encrypt_password
+# Encrypt Password
 def encrypt_password(request):
     if request.method == 'POST':
         password = request.POST['password']
@@ -209,38 +214,61 @@ def encrypt_password(request):
         return JsonResponse({'encrypted_password': encrypted_password.decode()})
     return render(request, 'App_Converter/encrypt_password.html')
 
-# decrypt_password
+# Decrypt Password
 def decrypt_password(request):
     if request.method == 'POST':
         encrypted_password = request.POST['encrypted_password']
-        decrypted_password = cipher.decrypt(encrypted_password.encode()).decode()
-        return JsonResponse({'decrypted_password': decrypted_password})
+        try:
+            decrypted_password = cipher.decrypt(encrypted_password.encode()).decode()
+            return JsonResponse({'decrypted_password': decrypted_password})
+        except Exception as e:
+            return JsonResponse({'error': 'Invalid encrypted password'}, status=400)
     return render(request, 'App_Converter/decrypt_password.html')
 
-
-# # Doc To PDF
+# DOC to PDF Conversion
 # def doc_to_pdf(request):
 #     if request.method == 'POST':
 #         doc_file = request.FILES['doc']
-#         document = Document(doc_file)
-#         content = ""
-#         for paragraph in document.paragraphs:
-#             content += paragraph.text
-#         pdf_file = HTML(string=content).write_pdf()
-#         with open('output.pdf', 'wb') as f:
-#             f.write(pdf_file)
-#         return JsonResponse({'message': 'DOC converted to PDF', 'file': 'output.pdf'})
+#         try:
+#             document = Document(doc_file)
+#             content = ""
+#             for paragraph in document.paragraphs:
+#                 content += f"<p>{paragraph.text}</p>"
+#             pdf_file = HTML(string=content).write_pdf()
+
+#             output_path = os.path.join('media', 'output.pdf')
+#             with open(output_path, 'wb') as f:
+#                 f.write(pdf_file)
+
+#             return JsonResponse({'message': 'DOC converted to PDF', 'file': output_path})
+#         except Exception as e:
+#             return JsonResponse({'error': str(e)}, status=400)
 #     return render(request, 'App_Converter/doc_to_pdf.html')
 
-#  mp4 to mp3
+# MP4 to MP3 Conversion
 def mp4_to_mp3(request):
     if request.method == 'POST':
         video_file = request.FILES['video']
-        audio = AudioSegment.from_file(video_file, format="mp4")
-        output_filename = "audio.mp3"
-        audio.export(output_filename, format="mp3")
-        return JsonResponse({'message': 'MP4 converted to MP3', 'file': output_filename})
+        try:
+            audio = AudioSegment.from_file(video_file, format="mp4")
+            output_path = os.path.join('media', 'audio.mp3')
+            audio.export(output_path, format="mp3")
+
+            return JsonResponse({'message': 'MP4 converted to MP3', 'file': output_path})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
     return render(request, 'App_Converter/mp4_to_mp3.html')
+
+
+# #  mp4 to mp3
+# def mp4_to_mp3(request):
+#     if request.method == 'POST':
+#         video_file = request.FILES['video']
+#         audio = AudioSegment.from_file(video_file, format="mp4")
+#         output_filename = "audio.mp3"
+#         audio.export(output_filename, format="mp3")
+#         return JsonResponse({'message': 'MP4 converted to MP3', 'file': output_filename})
+#     return render(request, 'App_Converter/mp4_to_mp3.html')
 
 # YT downlaoder
 def download_yt(request):
@@ -264,13 +292,24 @@ def download_yt(request):
                     return response
             except Exception as e:
                 return render(request, 'App_Converter/error.html', {'error': str(e)})
-
     else:
         form = DownloadForm()
-
     return render(request, 'App_Converter/yt_downloader.html', {'form': form})
 
+# Hash a password using PBKDF2
+def hash_password(request):
+    if request.method == 'POST':
+        plain_password = request.POST['password']
+        hashed_password = make_password(plain_password) 
+        return JsonResponse({'hashed_password': hashed_password})
+    return render(request, 'App_Converter/hash_password.html')
 
-
-
+# Verify if the given password matches the hash
+def verify_password(request):
+    if request.method == 'POST':
+        plain_password = request.POST['password']
+        hashed_password = request.POST['hashed_password']
+        is_valid = check_password(plain_password, hashed_password) 
+        return JsonResponse({'is_valid': is_valid})
+    return render(request, 'App_Converter/verify_password.html')
 

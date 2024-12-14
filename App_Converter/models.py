@@ -12,3 +12,10 @@ class DownloadHistory(models.Model):
 
     def __str__(self):
         return f"{self.platform} - {self.url}"
+
+class FileConversion(models.Model):
+    doc_file = models.FileField(upload_to='docs/')
+    video_file = models.FileField(upload_to='videos/')
+    
+    def __str__(self):
+        return self.doc_file.name if self.doc_file else self.video_file.name

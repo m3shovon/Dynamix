@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DOC to PDF</title>
+</head>
+<body>
+    <h1>Convert DOC to PDF</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="doc" accept=".doc,.docx" required>
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html>
