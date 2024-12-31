@@ -29,5 +29,8 @@ In App Converter:
 9. mp4 video to mp3 audio
 10. QR Generator
 11. Website IP Finder
+12. URL Shortener
+13. URL Changer
+14. Website info gather
     
 
