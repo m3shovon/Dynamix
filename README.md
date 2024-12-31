@@ -27,4 +27,7 @@ In App Converter:
 7. Decrypt pass to encrypt
 8. Doc to PDF
 9. mp4 video to mp3 audio
+10. QR Generator
+11. Website IP Finder
+    
 
