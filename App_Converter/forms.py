@@ -1,5 +1,5 @@
 from django import forms
-from .models import ImageUpload, FileConversion
+from .models import ImageUpload, FileConversion, QRCode
 
 class ImageUploadForm(forms.ModelForm):
     class Meta:
@@ -24,3 +24,8 @@ class FileConversionForm(forms.ModelForm):
     class Meta:
         model = FileConversion
         fields = ['doc_file', 'video_file']
+
+class QRCodeForm(forms.ModelForm):
+    class Meta:
+        model = QRCode
+        fields = ['url']

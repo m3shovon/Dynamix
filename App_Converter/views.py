@@ -1,24 +1,17 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 # from weasyprint import HTML
-
-# import json
+import json
 import requests
-
 import fitz  
 from django.http import HttpResponse
 import os
-
 from PIL import Image
 import io
-
 from django.contrib.auth.hashers import make_password, check_password
-
-
-# Remove BG
 from django.shortcuts import render, redirect
-from .forms import ImageUploadForm, DownloadForm
-from .models import ImageUpload, DownloadHistory
+from .forms import ImageUploadForm, DownloadForm, QRCodeForm
+from .models import ImageUpload, DownloadHistory, QRCode
 from rembg import remove
 from PIL import Image
 from io import BytesIO
@@ -26,17 +19,14 @@ from django.core.files.base import ContentFile
 
 from cryptography.fernet import Fernet
 from docx import Document
-# from weasyprint import HTML
 from pydub import AudioSegment
 from yt_dlp import YoutubeDL
-
+import qrcode
+import re
 
 
 def home(request):
     return render(request, 'App_Converter/home.html')
-
-from django.http import HttpResponse
-from django.urls import reverse
 
 # def download_text(request, filename):
 #     file_path = f'media/{filename}'
@@ -76,7 +66,7 @@ def image_to_text(request):
         image_file = request.FILES['image']
 
         # Prepare the request to OCR.space API
-        api_key = 'K81007853788957'  # testnetworkeverything@gmail.com
+        api_key = 'K81007853788957'  # connected with: testnetworkeverything@gmail.com
         url = 'https://api.ocr.space/parse/image'
         
         # Prepare the payload and headers
@@ -134,7 +124,7 @@ def remove_background(image_file):
 
 def upload_image(request):
     message = None
-    processed_image_url = None  # To store the URL of the processed image
+    processed_image_url = None  
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -149,11 +139,9 @@ def upload_image(request):
 
             # Set the URL of the processed image
             processed_image_url = image_instance.processed_image.url
-
-            # Set a success message
             message = "Image has been successfully processed! You can download it below."
 
-            # Reset the form for the user to upload another image
+            # Reset the form 
             form = ImageUploadForm()
 
     else:
@@ -165,16 +153,16 @@ def upload_image(request):
 def convert_image(request):
     if request.method == 'POST':
         image_file = request.FILES['image']
-        target_format = request.POST.get('format').lower()  # Normalize format input to lowercase
+        target_format = request.POST.get('format').lower()  
 
         # Open the uploaded image
         image = Image.open(image_file)
 
         # If converting to JPEG, remove alpha channel by converting to RGB
         if target_format in ['jpeg', 'jpg']:
-            if image.mode == 'RGBA':  # Check if image has an alpha channel
-                image = image.convert('RGB')  # Convert to RGB to remove alpha channel
-            target_format = 'JPEG'  # Normalize to 'JPEG' for PIL
+            if image.mode == 'RGBA':  
+                image = image.convert('RGB')  
+            target_format = 'JPEG' 
 
         # Handle other formats
         if target_format == 'png':
@@ -182,12 +170,11 @@ def convert_image(request):
         elif target_format == 'webp':
             target_format = 'WEBP'
 
-        # Save the image to an in-memory file
+        # Saving the image to an in-memory file
         image_io = io.BytesIO()
-        image.save(image_io, format=target_format.upper())  # Use the correct format
+        image.save(image_io, format=target_format.upper())
         image_io.seek(0)
 
-        # Prepare the response for file download
         response = HttpResponse(image_io, content_type=f'image/{target_format.lower()}')
         response['Content-Disposition'] = f'attachment; filename=converted_image.{target_format.lower()}'
         return response
@@ -313,3 +300,40 @@ def verify_password(request):
         return JsonResponse({'is_valid': is_valid})
     return render(request, 'App_Converter/verify_password.html')
 
+def generate_qr_code(request):
+    qr_code_image_url = None  # Variable to hold the QR code image URL
+    if request.method == 'POST':
+        form = QRCodeForm(request.POST)
+        if form.is_valid():
+            qr_code_instance = form.save(commit=False)
+
+            # Generate QR Code
+            qr_image = qrcode.make(qr_code_instance.url)
+            buffer = BytesIO()
+            qr_image.save(buffer, format='PNG')
+
+            # Sanitize file name
+            sanitized_url = re.sub(r'[^\w\-_]', '_', qr_code_instance.url)
+            file_name = f"{sanitized_url}.png"
+
+            # Save the image to the model's ImageField
+            qr_code_instance.qr_code_image.save(file_name, ContentFile(buffer.getvalue()), save=True)
+            qr_code_instance.save()
+
+            # Get the QR code image URL for rendering on the same page
+            qr_code_image_url = qr_code_instance.qr_code_image.url
+    else:
+        form = QRCodeForm()
+
+    return render(request, 'App_Converter/generate_qr_code.html', {'form': form, 'qr_code_image_url': qr_code_image_url})
+
+# def qr_code_detail(request, pk):
+#     qr_code = QRCode.objects.get(pk=pk)
+#     return render(request, 'App_Converter/qr_code_detail.html', {'qr_code': qr_code})
+
+# def download_qr_code(request, pk):
+#     qr_code = QRCode.objects.get(pk=pk)
+#     with open(qr_code.qr_code_image.path, 'rb') as f:
+#         response = HttpResponse(f.read(), content_type='image/png')
+#         response['Content-Disposition'] = f'attachment; filename="{qr_code.url}.png"'
+#         return response

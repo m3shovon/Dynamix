@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert Image Format</title>
+    <link rel="stylesheet" href="{% static 'assets/styles/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-5">Generate QR Code</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <!-- <label for="URL" class="form-label">Add URL</label> -->
+                <input type="url"  class="form-control-file"  name="url" placeholder="Add Your URL" required>
+            <!-- {{ form.as_p }} -->
+            </div>
+            <button class="btn" type="submit">Generate</button>
+        </form>
+
+        {% if qr_code_image_url %}
+            <h2>Your QR Code:</h2>
+            <img src="{{ qr_code_image_url }}" alt="QR Code">
+            <br>
+            <a style="background-color: green;" class="btn" href="{{ qr_code_image_url }}" download="qr_code.png">Download QR Code</a>
+            <a class="btn" href="{% url 'App_Converter:generate_qr_code' %}">Reset</a>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>

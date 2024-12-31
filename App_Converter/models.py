@@ -19,3 +19,13 @@ class FileConversion(models.Model):
     
     def __str__(self):
         return self.doc_file.name if self.doc_file else self.video_file.name
+    
+class QRCode(models.Model):
+    url = models.URLField(max_length=200)
+    qr_code_image = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
+
+    def __str__(self):
+        return self.url
+
+
+

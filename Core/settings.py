@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'simple_history', 'lockdown', 'crispy_forms', 'crispy_bootstrap4',
     'defender',
-    'App_Auth', 'App_Chat', 'App_Mail', 'App_Resume', 'App_Converter'
+    'App_Auth', 'App_Mail', 'App_Resume', 'App_Converter'
 
 ]
 

@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Converter Utility</title>
+    <title>Daily Utility</title>
     <link rel="stylesheet" href="{% static 'assets/styles/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1 class="app-title">File Converter Utility</h1>
+        <h1 class="app-title">Daily Utility</h1>
         <div class="card-container">
             <div class="card">
                 <h3>PDF to Text</h3>
@@ -36,6 +36,11 @@
                 <h3>Download Media</h3>
                 <p>Download videos from YouTube, Instagram, Facebook, or TikTok</p>
                 <a href="{% url 'App_Converter:download_media' %}" class="btn">Link Download</a>
+            </div>
+            <div class="card">
+                <h3>Download QR Code</h3>
+                <p>Generate & Download QR Code from using any URL</p>
+                <a href="{% url 'App_Converter:generate_qr_code' %}" class="btn">Download QR</a>
             </div>
             <!-- <div class="card">
                 <h3>Convert MP4 To MP3</h3>

@@ -100,3 +100,7 @@ cryptography
 python-docx 
 weasyprint 
 pydub
+
+
+# QR code Generator
+qrcode[pil]

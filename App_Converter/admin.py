@@ -8,3 +8,5 @@ admin.site.register(models.ImageUpload)
 admin.site.register(models.DownloadHistory)
 
 admin.site.register(models.FileConversion)
+
+admin.site.register(models.QRCode)
