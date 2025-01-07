@@ -23,17 +23,12 @@ from pydub import AudioSegment
 from yt_dlp import YoutubeDL
 import qrcode
 import re
-
+import socket
+from whois import whois
+from urllib.parse import urlparse
 
 def home(request):
     return render(request, 'App_Converter/home.html')
-
-# def download_text(request, filename):
-#     file_path = f'media/{filename}'
-#     with open(file_path, 'rb') as f:
-#         response = HttpResponse(f, content_type='text/plain')
-#         response['Content-Disposition'] = f'attachment; filename="{filename}"'
-#         return response
 
 # PDF TO Text
 def pdf_to_text(request):
@@ -44,11 +39,9 @@ def pdf_to_text(request):
             for page in doc:
                 text += page.get_text()
 
-        # Save text to a .txt file with UTF-8 encoding
         text_filename = "converted_pdf_to_text.txt"
         text_path = os.path.join('media', text_filename)
         
-        # Write with UTF-8 encoding to avoid UnicodeEncodeError
         with open(text_path, 'w', encoding='utf-8') as f:
             f.write(text)
 
@@ -113,7 +106,7 @@ def remove_background(image_file):
 
     # Open the image using PIL (ensure it's a PNG or other compatible format)
     image = Image.open(output_image_io)
-    image = image.convert("RGBA")  # Ensure the image has an alpha channel
+    image = image.convert("RGBA") 
 
     # Save the image to an in-memory buffer as PNG
     buffered = BytesIO()
@@ -246,17 +239,6 @@ def mp4_to_mp3(request):
             return JsonResponse({'error': str(e)}, status=400)
     return render(request, 'App_Converter/mp4_to_mp3.html')
 
-
-# #  mp4 to mp3
-# def mp4_to_mp3(request):
-#     if request.method == 'POST':
-#         video_file = request.FILES['video']
-#         audio = AudioSegment.from_file(video_file, format="mp4")
-#         output_filename = "audio.mp3"
-#         audio.export(output_filename, format="mp3")
-#         return JsonResponse({'message': 'MP4 converted to MP3', 'file': output_filename})
-#     return render(request, 'App_Converter/mp4_to_mp3.html')
-
 # YT downlaoder
 def download_yt(request):
     if request.method == "POST":
@@ -337,3 +319,57 @@ def generate_qr_code(request):
 #         response = HttpResponse(f.read(), content_type='image/png')
 #         response['Content-Disposition'] = f'attachment; filename="{qr_code.url}.png"'
 #         return response
+
+
+def get_url_info(request):
+    url = request.GET.get('url')
+    if not url:
+        return JsonResponse({'error': 'Please provide a URL as a query parameter.'})
+
+    # Ensure the URL starts with HTTP/HTTPS
+    if not url.startswith(('http://', 'https://')):
+        url = 'http://' + url
+
+    try:
+        # Parse the URL to extract the domain
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc or parsed_url.path
+        
+        # Get IP Address
+        ip_address = socket.gethostbyname(domain)
+        
+        # Get WHOIS info
+        whois_info = whois(domain)
+        
+        # Get open ports (simple test for common ports)
+        open_ports = []
+        common_ports = [80, 443, 21, 22, 25]
+        for port in common_ports:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(1)  # 1-second timeout
+                result = sock.connect_ex((domain, port))
+                if result == 0:
+                    open_ports.append(port)
+                sock.close()
+            except:
+                continue
+        
+        # Extract subdomains (simplified - use third-party APIs for advanced detection)
+        subdomains = domain.split('.')
+        
+        # Response data
+        data = {
+            'domain': domain,
+            'ip_address': ip_address,
+            'whois_info': {
+                'registrar': whois_info.registrar,
+                'creation_date': whois_info.creation_date,
+                'expiration_date': whois_info.expiration_date,
+            },
+            'open_ports': open_ports,
+            'subdomains': subdomains,
+        }
+        return JsonResponse(data)
+    except Exception as e:
+        return JsonResponse({'error': str(e)})

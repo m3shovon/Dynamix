@@ -30,7 +30,12 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'admin_tools_stats', 
     'django_nvd3',
-    'jazzmin',
+    # 'jazzmin',
+    #  'django_admin_dracula',
+
+    "admin_interface",
+    "colorfield",
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +47,9 @@ INSTALLED_APPS = [
     'App_Auth', 'App_Mail', 'App_Resume', 'App_Converter'
 
 ]
+
+X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
 CRISPY_ALLOWED_TEMPLATE_PACKs = 'bootstrap4'
 
@@ -150,7 +158,7 @@ STATICFILES_DIRS = [
 ]
 # STATIC_ROOT = ''
 
-# STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = MEDIA_DIR

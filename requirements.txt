@@ -34,7 +34,9 @@ python-decouple
 django-admin-logs
 
 ### Admin UI
-django-jazzmin
+# django-jazzmin
+# django-admin-dracula
+django-admin-interface
 
 ### For SSL
 django-sslserver
@@ -104,3 +106,9 @@ pydub
 
 # QR code Generator
 qrcode[pil]
+
+
+# URL info
+
+python-whois
+

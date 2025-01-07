@@ -27,4 +27,8 @@ In App Converter:
 7. Decrypt pass to encrypt
 8. Doc to PDF
 9. mp4 video to mp3 audio
+10. QR Generator
+11. URL info info finding
 
+
+GET http://127.0.0.1:8888/ip/?url=theicthub.com
