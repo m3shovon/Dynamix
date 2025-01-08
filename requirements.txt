@@ -109,6 +109,9 @@ qrcode[pil]
 
 
 # URL info
-
 python-whois
+dnspython
+sublist3r
+argparse
+
 

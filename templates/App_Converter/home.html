@@ -9,8 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1 class="app-title">Daily Utility</h1>
+    <div class="container" style="padding: 50px;">
+        <h1 class="app-title" style="margin-top: 100px;">Daily Utility</h1>
         <div class="card-container">
             <div class="card">
                 <h3>PDF to Text</h3>
@@ -41,6 +41,11 @@
                 <h3>Download QR Code</h3>
                 <p>Generate & Download QR Code from using any URL</p>
                 <a href="{% url 'App_Converter:generate_qr_code' %}" class="btn">Download QR</a>
+            </div>
+            <div class="card">
+                <h3>URL/IP Info Gather</h3>
+                <p>Get website info, IP, Open ports using any URL</p>
+                <a href="{% url 'App_Converter:get_url_info' %}" class="btn">Url Info</a>
             </div>
             <!-- <div class="card">
                 <h3>Convert MP4 To MP3</h3>

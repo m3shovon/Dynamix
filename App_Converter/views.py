@@ -26,6 +26,8 @@ import re
 import socket
 from whois import whois
 from urllib.parse import urlparse
+import dns.resolver
+
 
 def home(request):
     return render(request, 'App_Converter/home.html')
@@ -309,67 +311,67 @@ def generate_qr_code(request):
 
     return render(request, 'App_Converter/generate_qr_code.html', {'form': form, 'qr_code_image_url': qr_code_image_url})
 
-# def qr_code_detail(request, pk):
-#     qr_code = QRCode.objects.get(pk=pk)
-#     return render(request, 'App_Converter/qr_code_detail.html', {'qr_code': qr_code})
-
-# def download_qr_code(request, pk):
-#     qr_code = QRCode.objects.get(pk=pk)
-#     with open(qr_code.qr_code_image.path, 'rb') as f:
-#         response = HttpResponse(f.read(), content_type='image/png')
-#         response['Content-Disposition'] = f'attachment; filename="{qr_code.url}.png"'
-#         return response
-
-
+# Website info Gatherer
 def get_url_info(request):
-    url = request.GET.get('url')
-    if not url:
-        return JsonResponse({'error': 'Please provide a URL as a query parameter.'})
+    data = None
+    error = None
 
-    # Ensure the URL starts with HTTP/HTTPS
-    if not url.startswith(('http://', 'https://')):
-        url = 'http://' + url
+    if request.method == "POST":
+        url = request.POST.get('url')
+        if not url.startswith(('http://', 'https://')):
+            url = 'http://' + url
 
-    try:
-        # Parse the URL to extract the domain
-        parsed_url = urlparse(url)
-        domain = parsed_url.netloc or parsed_url.path
-        
-        # Get IP Address
-        ip_address = socket.gethostbyname(domain)
-        
-        # Get WHOIS info
-        whois_info = whois(domain)
-        
-        # Get open ports (simple test for common ports)
-        open_ports = []
-        common_ports = [80, 443, 21, 22, 25]
-        for port in common_ports:
-            try:
-                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                sock.settimeout(1)  # 1-second timeout
-                result = sock.connect_ex((domain, port))
-                if result == 0:
-                    open_ports.append(port)
-                sock.close()
-            except:
-                continue
-        
-        # Extract subdomains (simplified - use third-party APIs for advanced detection)
-        subdomains = domain.split('.')
-        
-        # Response data
-        data = {
-            'domain': domain,
-            'ip_address': ip_address,
-            'whois_info': {
-                'registrar': whois_info.registrar,
-                'creation_date': whois_info.creation_date,
-                'expiration_date': whois_info.expiration_date,
-            },
-            'open_ports': open_ports,
-            'subdomains': subdomains,
-        }
-        return JsonResponse(data)
-    except Exception as e:
-        return JsonResponse({'error': str(e)})
+        try:
+            # Parse the URL to extract the domain
+            parsed_url = urlparse(url)
+            domain = parsed_url.netloc or parsed_url.path
+            
+            # Get IP Address
+            ip_address = socket.gethostbyname(domain)
+            
+            # Get WHOIS info
+            whois_info = whois(domain)
+            
+            # Get open ports (simple test for common ports)
+            open_ports = []
+            common_ports = [80, 443, 21, 22, 25]
+            for port in common_ports:
+                try:
+                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    sock.settimeout(1)  # 1-second timeout
+                    result = sock.connect_ex((domain, port))
+                    if result == 0:
+                        open_ports.append(port)
+                    sock.close()
+                except:
+                    continue
+            
+            # Detect subdomains using DNS resolver
+            subdomains = []
+            common_subdomains = ['www', 'mail', 'ftp', 'blog', 'api', 'test']
+            for sub in common_subdomains:
+                subdomain = f"{sub}.{domain}"
+                try:
+                    dns.resolver.resolve(subdomain, 'A')
+                    subdomains.append(subdomain)
+                except dns.resolver.NXDOMAIN:
+                    continue
+                except dns.resolver.NoAnswer:
+                    continue
+            
+            # Response data
+            data = {
+                'domain': domain,
+                'ip_address': ip_address,
+                'whois_info': {
+                    'registrar': whois_info.registrar,
+                    'creation_date': whois_info.creation_date,
+                    'expiration_date': whois_info.expiration_date,
+                },
+                'open_ports': open_ports,
+                'subdomains': subdomains,
+            }
+        except Exception as e:
+            error = f"Error fetching information: {str(e)}"
+
+    return render(request, 'App_Converter/url_info.html', {'data': data, 'error': error})
