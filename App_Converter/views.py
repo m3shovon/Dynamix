@@ -28,6 +28,9 @@ from whois import whois
 from urllib.parse import urlparse
 import dns.resolver
 
+from Wappalyzer import Wappalyzer, WebPage
+
+
 
 def home(request):
     return render(request, 'App_Converter/home.html')
@@ -311,7 +314,7 @@ def generate_qr_code(request):
 
     return render(request, 'App_Converter/generate_qr_code.html', {'form': form, 'qr_code_image_url': qr_code_image_url})
 
-# Website info Gatherer
+# URL info Gatherer
 def get_url_info(request):
     data = None
     error = None
@@ -320,19 +323,12 @@ def get_url_info(request):
         url = request.POST.get('url')
         if not url.startswith(('http://', 'https://')):
             url = 'http://' + url
-
         try:
-            # Parse the URL to extract the domain
             parsed_url = urlparse(url)
             domain = parsed_url.netloc or parsed_url.path
-            
-            # Get IP Address
             ip_address = socket.gethostbyname(domain)
-            
-            # Get WHOIS info
             whois_info = whois(domain)
             
-            # Get open ports (simple test for common ports)
             open_ports = []
             common_ports = [80, 443, 21, 22, 25]
             for port in common_ports:
@@ -346,7 +342,6 @@ def get_url_info(request):
                 except:
                     continue
             
-            # Detect subdomains using DNS resolver
             subdomains = []
             common_subdomains = ['www', 'mail', 'ftp', 'blog', 'api', 'test']
             for sub in common_subdomains:
@@ -359,7 +354,6 @@ def get_url_info(request):
                 except dns.resolver.NoAnswer:
                     continue
             
-            # Response data
             data = {
                 'domain': domain,
                 'ip_address': ip_address,
@@ -375,3 +369,52 @@ def get_url_info(request):
             error = f"Error fetching information: {str(e)}"
 
     return render(request, 'App_Converter/url_info.html', {'data': data, 'error': error})
+
+
+# Website information gatherer
+def analyze_website(url):
+    try:
+        if not url.startswith(("http://", "https://")):
+            url = "http://" + url
+        
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+
+        wappalyzer = Wappalyzer.latest()
+        webpage = WebPage.new_from_response(response)
+        technologies = wappalyzer.analyze(webpage)
+
+        # Convert the set to a list
+        return {
+            "status": "success",
+            "url": url,
+            "technologies": list(technologies),
+        }
+
+    except requests.exceptions.RequestException as e:
+        return {
+            "status": "error",
+            "message": str(e),
+        }
+    
+# def analyze_website_view(request):
+#     if request.method in ["POST", "GET"]:
+#         url = request.POST.get("url") if request.method == "POST" else request.GET.get("url")
+#         if not url:
+#             return JsonResponse({"status": "error", "message": "URL is required."})
+
+#         result = analyze_website(url)
+#         return JsonResponse(result)
+
+#     return JsonResponse({"status": "error", "message": "Invalid request method."})
+
+def analyze_website_view(request):
+    if request.method == "POST":
+        url = request.POST.get("url")
+        if not url:
+            return render(request, "App_Converter/website_analyzer.html", {"error": "URL is required."})
+
+        result = analyze_website(url)
+        return render(request, "App_Converter/website_analyzer.html", {"result": result})
+
+    return render(request, "App_Converter/website_analyzer.html")

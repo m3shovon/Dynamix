@@ -40,8 +40,8 @@
         <h1 class="text-center my-5">Fetch URL Information</h1>
         <form method="POST">
             {% csrf_token %}
-            <!-- <label for="url">Enter URL:</label> -->
             <div class="form-group">
+                <!-- <label for="url">Enter URL:</label> -->
                 <input class="form-control-file" type="text" id="url" name="url" placeholder="Enter URL" required>
             </div>
             <button class="btn" type="submit">Fetch Info</button>

@@ -18,6 +18,7 @@ urlpatterns = [
     path('verify-password/', views.verify_password, name='verify_password'),
     path('mp4-to-mp3/', views.mp4_to_mp3, name='mp4_to_mp3'),
     path('ip/', views.get_url_info, name='get_url_info'),
+    path('analyze-website/', views.analyze_website_view, name='analyze_website'),
     # path('doc-to-pdf/', views.doc_to_pdf, name='doc_to_pdf'),
     # path('download/<str:filename>/', views.download_text, name='download_text'),
 
