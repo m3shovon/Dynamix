@@ -12,7 +12,13 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import render, redirect
 from .forms import ImageUploadForm, DownloadForm, QRCodeForm
 from .models import ImageUpload, DownloadHistory, QRCode
-from rembg import remove
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+# from rembg import remove
+
+
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
@@ -30,7 +36,9 @@ import dns.resolver
 
 from Wappalyzer import Wappalyzer, WebPage
 
+import logging
 
+logger = logging.getLogger(__name__)
 
 def home(request):
     return render(request, 'App_Converter/home.html')
@@ -100,52 +108,131 @@ def image_to_text(request):
 
 # ####### REMOVE BG ########
 def remove_background(image_file):
-    # Convert the image file into a format rembg can handle
-    input_image = image_file.read()
+    """
+    Improved background removal function with better memory management
+    and error handling.
+    """
+    try:
+        # Process in chunks to reduce memory usage
+        input_image = b''
+        for chunk in image_file.chunks():
+            input_image += chunk
 
-    # Use rembg to remove the background
-    output_image = remove(input_image)
+        # Lazy import of rembg to reduce initial memory load
+        from rembg import remove
+        
+        # Process the image
+        output_image = remove(input_image)
+        
+        # Convert to PIL Image with memory optimization
+        with BytesIO(output_image) as output_io:
+            with Image.open(output_io) as image:
+                image = image.convert("RGBA")
+                
+                # Save to buffer
+                buffered = BytesIO()
+                image.save(buffered, format="PNG", optimize=True)
+                buffered.seek(0)
+                
+                return ContentFile(buffered.read(), name="processed_image.png")
+                
+    except Exception as e:
+        logger.error(f"Background removal failed: {str(e)}")
+        raise  # Re-raise the exception after logging
 
-    # Convert the output bytes into a BytesIO object
-    output_image_io = BytesIO(output_image)
-
-    # Open the image using PIL (ensure it's a PNG or other compatible format)
-    image = Image.open(output_image_io)
-    image = image.convert("RGBA") 
-
-    # Save the image to an in-memory buffer as PNG
-    buffered = BytesIO()
-    image.save(buffered, format="PNG")
-
-    # Return the in-memory file as Django's ContentFile
-    return ContentFile(buffered.getvalue(), name="processed_image.png")
+def validate_file_size(file):
+    """Validate that the file size is within allowed limits"""
+    if file.size > settings.FILE_UPLOAD_MAX_MEMORY_SIZE:
+        raise ValidationError(
+            f"File too large. Size should not exceed {settings.FILE_UPLOAD_MAX_MEMORY_SIZE/(1024*1024)}MB."
+        )
 
 def upload_image(request):
     message = None
-    processed_image_url = None  
+    processed_image_url = None
+    
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            image_instance = form.save(commit=False)
-
-            # Process the image and remove background
-            processed_image = remove_background(request.FILES['image'])
-
-            # Save the processed image to the instance
-            image_instance.processed_image.save(processed_image.name, processed_image)
-            image_instance.save()
-
-            # Set the URL of the processed image
-            processed_image_url = image_instance.processed_image.url
-            message = "Image has been successfully processed! You can download it below."
-
-            # Reset the form 
-            form = ImageUploadForm()
-
+            try:
+                # Create but don't save to DB yet
+                image_instance = form.save(commit=False)
+                
+                # Process the image
+                processed_image = remove_background(request.FILES['image'])
+                
+                # Save the processed image
+                image_instance.processed_image.save(
+                    "processed_image.png", 
+                    processed_image
+                )
+                image_instance.save()
+                
+                processed_image_url = image_instance.processed_image.url
+                message = "Image processed successfully! Download below."
+                
+                # Reset form for new upload
+                form = ImageUploadForm()
+                
+            except Exception as e:
+                logger.error(f"Image processing error: {str(e)}")
+                message = "Error processing image. Please try again."
     else:
         form = ImageUploadForm()
 
-    return render(request, 'App_Converter/remove_background.html', {'form': form, 'message': message, 'processed_image_url': processed_image_url})
+    return render(request, 'App_Converter/remove_background.html', {
+        'form': form,
+        'message': message,
+        'processed_image_url': processed_image_url
+    })
+
+# def remove_background(image_file):
+#     # Convert the image file into a format rembg can handle
+#     input_image = image_file.read()
+
+#     # Use rembg to remove the background
+#     output_image = remove(input_image)
+
+#     # Convert the output bytes into a BytesIO object
+#     output_image_io = BytesIO(output_image)
+
+#     # Open the image using PIL (ensure it's a PNG or other compatible format)
+#     image = Image.open(output_image_io)
+#     image = image.convert("RGBA") 
+
+#     # Save the image to an in-memory buffer as PNG
+#     buffered = BytesIO()
+#     image.save(buffered, format="PNG")
+
+#     # Return the in-memory file as Django's ContentFile
+#     return ContentFile(buffered.getvalue(), name="processed_image.png")
+
+# def upload_image(request):
+#     message = None
+#     processed_image_url = None  
+#     if request.method == 'POST':
+#         form = ImageUploadForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             image_instance = form.save(commit=False)
+
+#             # Process the image and remove background
+#             processed_image = remove_background(request.FILES['image'])
+
+#             # Save the processed image to the instance
+#             image_instance.processed_image.save(processed_image.name, processed_image)
+#             image_instance.save()
+
+#             # Set the URL of the processed image
+#             processed_image_url = image_instance.processed_image.url
+#             message = "Image has been successfully processed! You can download it below."
+
+#             # Reset the form 
+#             form = ImageUploadForm()
+
+#     else:
+#         form = ImageUploadForm()
+
+#     return render(request, 'App_Converter/remove_background.html', {'form': form, 'message': message, 'processed_image_url': processed_image_url})
 
 # ########### CONVERT IMAGE FORMAT ###########
 def convert_image(request):

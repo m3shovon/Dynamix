@@ -86,7 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django_auto_logout.context_processors.auto_logout_client',
+                # 'django_auto_logout.context_processors.auto_logout_client',
             ],
         },
     },
@@ -214,4 +214,8 @@ EMAIL_HOST_PASSWORD = 'dgsxxwcpogfrolvr'
 ### Cross-site request forgery(CSRF) protection
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
+
+# Limit file upload size
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5MB
 

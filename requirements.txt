@@ -92,6 +92,10 @@ weasyprint
 
 # remove Background
 rembg
+# opencv-python-headless
+# numpy
+# opencv-python
+
 
 # Download from link(YT,Insta)
 yt-dlp
