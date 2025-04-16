@@ -3,6 +3,7 @@ django
 sqlparse
 tzdata
 asgiref
+setuptools
 
 ### image
 pillow
@@ -17,58 +18,57 @@ django-js-asset==2.0.0
 django-tempus-dominus
 
 ### Mysql Server
-mysqlclient
+# mysqlclient
 # mysql-server
 
 ### PostgreSQL Server
-psycopg2
+# psycopg2
 # pytz
 
 ### WEB3 Integration
 # web3
 
 ### env file for secret key
-python-decouple
+# python-decouple
 
 # Admin Log
-django-admin-logs
+# django-admin-logs
 
 ### Admin UI
 # django-jazzmin
 # django-admin-dracula
-django-admin-interface
+# django-admin-interface
 
 ### For SSL
-django-sslserver
+# django-sslserver
 # py manage.py runsslserver
 
 ### AUTO SESSION LOGOUT
-django-auto-logout
-pytz
+# django-auto-logout
+# pytz
 
 ### Django Simple history in admin
-django-simple-history
+# django-simple-history
 
 ### Email instead of username as main user
-django-use-email-as-username
+# django-use-email-as-username
 
 ### Lockdown application
-django-lockdown
+# django-lockdown
 
 ### Django admin chart for admin panel
-django-admin-charts
+# django-admin-charts
 
 ### SEND MAIL POST
-django-post-office
+# django-post-office
 
 ### API Tracking
 # drf-api-tracking
 
 ###Django Defender
-django-defender
+# django-defender
 
-# For image processing
-Pillow     
+# For image processing     
 
  # For PDF to text           
 PyMuPDF     
@@ -117,4 +117,5 @@ argparse
 
 # Website information Gather
 python-Wappalyzer
+
 

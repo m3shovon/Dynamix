@@ -1,6 +1,6 @@
 
 from pathlib import Path
-from decouple import config
+# from decouple import config
 from django import conf
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,8 +19,8 @@ SECRET_KEY = 'django-insecure-b^_6n4g+!@#69bs%pec-bp2o(db_ga_aj0%d@5#h=$*8egfm80
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-SECRET_KEY = config('THE_SECRET_KEY')
-DEBUG = config('WEB_DEBUG', cast = bool)
+# SECRET_KEY = config('THE_SECRET_KEY')
+# DEBUG = config('WEB_DEBUG', cast = bool)
 
 ALLOWED_HOSTS = ['*']
 
@@ -42,9 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cleanup.apps.CleanupConfig',
     'simple_history', 'lockdown', 'crispy_forms', 'crispy_bootstrap4',
     'defender',
-    'App_Auth', 'App_Mail', 'App_Resume', 'App_Converter'
+    'App_Auth', 'App_Converter'
 
 ]
 
