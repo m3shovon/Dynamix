@@ -28,13 +28,13 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'admin_tools_stats', 
-    'django_nvd3',
+    # 'admin_tools_stats', 
+    # 'django_nvd3',
     # 'jazzmin',
     #  'django_admin_dracula',
 
-    "admin_interface",
-    "colorfield",
+    # "admin_interface",
+    # "colorfield",
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,8 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_cleanup.apps.CleanupConfig',
-    'simple_history', 'lockdown', 'crispy_forms', 'crispy_bootstrap4',
-    'defender',
+    # 'simple_history',
+    #   'lockdown', 
+      'crispy_forms', 'crispy_bootstrap4',
+    # 'defender',
     'App_Auth', 'App_Converter'
 
 ]
@@ -64,11 +66,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'simple_history.middleware.HistoryRequestMiddleware',
+    # 'simple_history.middleware.HistoryRequestMiddleware',
     # 'lockdown.middleware.LockdownMiddleware', # Lockdown an entire site
-    'django_auto_logout.middleware.auto_logout', # Session log out
+    # 'django_auto_logout.middleware.auto_logout', # Session log out
     # 'defender.middleware.FailedLoginMiddleware', # Failed login
-    'App_Auth.middleware.HitCounterMiddleware', # hit Count
+    # 'App_Auth.middleware.HitCounterMiddleware', # hit Count
 ]
 
 ROOT_URLCONF = 'Core.urls'
@@ -175,13 +177,13 @@ LOGIN_REDIRECT_URL = 'App_Auth/signin'
 LOGOUT_REDIRECT_URL = 'App_Auth/signout'
 
 
-from datetime import timedelta
-AUTO_LOGOUT = {
-    'IDLE_TIME': timedelta(minutes=30),
-    #  'SESSION_TIME': timedelta(minutes=30),
-    'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
-     'MESSAGE': 'The session has expired. Please login again to continue.',
-}
+# from datetime import timedelta
+# AUTO_LOGOUT = {
+#     'IDLE_TIME': timedelta(minutes=30),
+#     #  'SESSION_TIME': timedelta(minutes=30),
+#     'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
+#      'MESSAGE': 'The session has expired. Please login again to continue.',
+# }
 
 
 # Send Mail 
@@ -194,7 +196,7 @@ EMAIL_HOST_USER = 'shovonmufrid98@gmail.com'
 EMAIL_HOST_PASSWORD = 'dgsxxwcpogfrolvr'
 
 ### Lockdown Password
-LOCKDOWN_PASSWORDS = ('letmein', 'beta')
+# LOCKDOWN_PASSWORDS = ('letmein', 'beta')
 
 
 ### Cross Site Scripting 
